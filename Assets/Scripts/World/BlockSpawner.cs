@@ -106,6 +106,14 @@ public class BlockSpawner : MonoBehaviour
 
         _blocksStack.Add(block);
         _id++;
+
+        if (_fixedSpawnAmount == _id)
+        {
+            SpawnBlock(Instantiate(Content.FinishBlock));
+            PaintCanvas paintCanvas = GameManager.Instance.PaintCanvas;
+            paintCanvas.gameObject.SetActive(true);
+            paintCanvas.transform.position = FinishBlock.Instance.PaintCanvasSpawn.transform.position;
+        }
     }
 
     private Block GetNextBlock()

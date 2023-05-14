@@ -6,11 +6,12 @@ using UnityEngine;
 public class Content : MonoBehaviour
 {
     /// --- BLOCK SECTION ---
-    public static Block EmptyBlock;
+    public static Block EmptyBlock, FinishBlock;
     public static List<Block> PaintBlocks, DangerBlocks;
     private void Awake()
     {
         EmptyBlock = Resources.Load<Block>("Blocks/EmptyBlock");
+        FinishBlock = Resources.Load<Block>("Blocks/FinishBlock");
 
         PaintBlocks = new List<Block>();
         PaintBlocks.AddRange(Resources.LoadAll<Block>("Blocks/PaintBlock"));

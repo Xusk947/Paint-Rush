@@ -339,7 +339,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28d3d5d0dc35603458dd5aea0ee15660, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _manager: {fileID: 0}
   _straigthSpeed: 0.075
   _speed: 0.2
 --- !u!1 &519420028
@@ -591,8 +590,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 266e612cf7c68a44a9e69d36055eaeb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _collectableColor: {r: 0.9056604, g: 0.09740115, b: 0.90209305, a: 1}
   _levelDifficult: 1
+  PaintCanvas: {fileID: 0}
 --- !u!114 &761806268
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -646,7 +645,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea534d8a9f1c1eb46b985e61c7084707, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _fixedSpawnAmount: 10
+  _fixedSpawnAmount: 5
 --- !u!4 &1018604693
 Transform:
   m_ObjectHideFlags: 0

@@ -27,8 +27,7 @@ public class Collectable : MonoBehaviour
     
     private void CollectedAnimation()
     {
-        Color newColor = _renderer.material.color -= new Color(0, 0, 0, 0.1f);
-        ChangeColor(newColor);
+        SubtractColor(new Color(0, 0, 0, 0.1f));
         transform.position += _velocity;
 
         if (_renderer.material.color.a < -1)
@@ -37,10 +36,16 @@ public class Collectable : MonoBehaviour
         }
     }
 
-    protected virtual void ChangeColor(Color color)
+    protected virtual void ChangeColor(List<Color> colors)
     {
-        _renderer.material.color = color;
+        _renderer.material.color = colors[Random.Range(0, colors.Count)];
     }
+
+    protected virtual void SubtractColor(Color color)
+    {
+        _renderer.material.color -= color;
+    }
+
     public virtual void Collect() {
         _colected = true;
         _velocity = new Vector3(0, 0.1f, 0);
