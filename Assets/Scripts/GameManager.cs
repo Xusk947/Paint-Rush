@@ -18,13 +18,23 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         PaintCanvas = Instantiate(Resources.Load<PaintCanvas>("Prefabs/PaintItem"));
-        PaintCanvas.Texture = Resources.Load<Texture2D>("Images/cat");
+
+        if (GameData.Instance != null)
+        {
+            print("LOADED GAME DATA");
+            GameData.Instance.ExportPaintCanvasData(PaintCanvas);
+        } else
+        {
+            print("GAME DATA NOT CREATED");
+            PaintCanvas.Texture = Resources.Load<Texture2D>("Images/cat");
+        }
     }
 
     private void Update()
     {
         _levelDifficult += 0.00003f;
     }
+
     private void Awake()
     {
         Instance = this;

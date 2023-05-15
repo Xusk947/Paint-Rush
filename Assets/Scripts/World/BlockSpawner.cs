@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class BlockSpawner : MonoBehaviour
 {
+    public static BlockSpawner Instance;
     /// <summary>
     /// Length of all spawned blocks in summary
     /// </summary>
@@ -26,13 +27,22 @@ public class BlockSpawner : MonoBehaviour
 
     private RouletteWheelSelection<BlockCollection> _blockRoulette;
 
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     private void Start()
     {
         _length = 0;
         _blocksStack = new List<Block>();
 
         LoadBlocks();
+        SpawnStartBlocks();
+    }
 
+    private void SpawnStartBlocks()
+    {
         SpawnBlock(Instantiate(Content.EmptyBlock));
         SpawnBlock(Instantiate(Content.EmptyBlock));
         SpawnBlock(GetNextBlock());

@@ -6,11 +6,21 @@ using UnityEngine;
 
 public class PaintCanvas : MonoBehaviour
 {
+    public delegate void OnPaintFinish(bool finished);
+
+    public static event OnPaintFinish PaintEvent;
+
+    /***
+     * When Function Paint called after this value it will take a 1 point from ScoreBoard
+     */
+    public int CountUseModifier = 3;
+
     private Texture2D _texture, _currentTexture;
     
     private Renderer _renderer;
     private Material _material;
     private Dictionary<Color, List<Vector2Int>> _pixels;
+
     private float _pixelFillTime = 10f;
 
     public List<Color> Colors
@@ -58,6 +68,22 @@ public class PaintCanvas : MonoBehaviour
         }
     }
 
+    public Texture2D CurrentTexture
+    {
+        get { return _currentTexture; }
+        set 
+        { 
+            _currentTexture = value;
+            _material.mainTexture = _currentTexture;
+        }
+    }
+
+    public Dictionary<Color, List<Vector2Int>> Pixels
+    {
+        get { return _pixels; }
+        set { _pixels = value; }
+    }
+
 
     private void Awake()
     {
@@ -70,8 +96,7 @@ public class PaintCanvas : MonoBehaviour
     {
         List<Color> colors = _pixels.Keys.ToList();
 
-        int countUseModifier = 3;
-        int countUse = countUseModifier;
+        int countUse = CountUseModifier;
         PaintScoreText.Instance.Score = count;
 
         for (int i = 0; i < colors.Count; i++)
@@ -91,7 +116,7 @@ public class PaintCanvas : MonoBehaviour
                 countUse--;
                 if (countUse < 0)
                 {
-                    countUse = countUseModifier;
+                    countUse = CountUseModifier;
                     count--;
                 }
 
@@ -110,7 +135,7 @@ public class PaintCanvas : MonoBehaviour
             if (_pixels[value].Count > 0) finished = false;
         }
 
-        print(finished);
+        PaintEvent?.Invoke(finished);
 
         _pixelFillTime = 10f;
     }
