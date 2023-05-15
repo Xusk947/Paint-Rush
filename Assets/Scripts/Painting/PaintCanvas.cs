@@ -11,6 +11,7 @@ public class PaintCanvas : MonoBehaviour
     private Renderer _renderer;
     private Material _material;
     private Dictionary<Color, List<Vector2Int>> _pixels;
+    private float _pixelFillTime = 10f;
 
     public List<Color> Colors
     {
@@ -26,6 +27,10 @@ public class PaintCanvas : MonoBehaviour
         set
         {
             _texture = value;
+            _currentTexture = new Texture2D(_texture.width, _texture.height, _texture.format, _texture.mipmapCount > 1);
+            _currentTexture.filterMode = _texture.filterMode;
+
+            _material.mainTexture = _currentTexture;
 
             transform.localScale = new Vector3(1, 1, 1);
 
@@ -53,17 +58,6 @@ public class PaintCanvas : MonoBehaviour
         }
     }
 
-    public void FillPixel(Color color)
-    {
-        if (!_pixels.ContainsKey(color)) return;
-        // Get all points from Color Dictionary
-        List<Vector2Int> _points = _pixels[color];
-        
-        if (_points.Count <= 0) return;
-
-        /* TODO :: Finish fill 1 pixel and add FillPixels */    
-        
-    }
 
     private void Awake()
     {
@@ -71,5 +65,64 @@ public class PaintCanvas : MonoBehaviour
         _material = _renderer.sharedMaterial;
         transform.localScale = new Vector3(1, 1, 1);
         gameObject.SetActive(false);
+    }
+    public IEnumerator FillPixels(int count)
+    {
+        List<Color> colors = _pixels.Keys.ToList();
+
+        int countUseModifier = 3;
+        int countUse = countUseModifier;
+        PaintScoreText.Instance.Score = count;
+
+        for (int i = 0; i < colors.Count; i++)
+        {
+            Color value = colors[i];
+            List<Vector2Int> colorPixels = _pixels[value];
+            while (count > 0)
+            {
+
+                if (colorPixels.Count <= 0) break;
+                Vector2Int pixel = colorPixels[0];
+
+                _currentTexture.SetPixel(pixel.x, pixel.y, value);
+                _currentTexture.Apply();
+
+                colorPixels.Remove(pixel);
+                countUse--;
+                if (countUse < 0)
+                {
+                    countUse = countUseModifier;
+                    count--;
+                }
+
+                _pixelFillTime -= 0.1f;
+                PaintScoreText.Instance.Score = count;
+
+                yield return WaitForSecondsMillisec(_pixelFillTime);
+            }
+        }
+
+        bool finished = true;
+
+        for (int i = 0; i < colors.Count; i++)
+        {
+            Color value = colors[i];
+            if (_pixels[value].Count > 0) finished = false;
+        }
+
+        print(finished);
+
+        _pixelFillTime = 10f;
+    }
+
+    private IEnumerator WaitForSecondsMillisec(float milliseconds)
+    {
+        float startTime = Time.realtimeSinceStartup;
+        float endTime = startTime + milliseconds / 1000f;
+
+        while (Time.realtimeSinceStartup < endTime)
+        {
+            yield return null;
+        }
     }
 }

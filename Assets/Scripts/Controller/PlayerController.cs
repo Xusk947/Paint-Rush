@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     private float _speed = 1f;
 
     private bool _moveTowardsFinish;
+    private bool _paintCalled = false;
 
     private void Awake()
     {
@@ -38,9 +39,24 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateMovementToFinish()
     {
-        transform.position = Vector3.MoveTowards(transform.position, FinishBlock.Instance.PlayerPosition.transform.position, _speed * Time.deltaTime * 60f);
-        CameraFollow.Instance.locationOffset = Vector3.MoveTowards(CameraFollow.Instance.locationOffset, new Vector3(0, 9f, -11f), Time.deltaTime * 60f);
-        CameraFollow.Instance.rotationOffset = Vector3.MoveTowards(CameraFollow.Instance.rotationOffset, new Vector3(15f, 0, 0), Time.deltaTime * 60f);
+        float distance = (FinishBlock.Instance.PlayerPosition.transform.position - transform.position).sqrMagnitude;
+
+        if (distance < 1)
+        {
+            PaintCanvas canvas = GameManager.Instance.PaintCanvas;
+            if (!_paintCalled)
+            {
+                StartCoroutine(canvas.FillPixels(PaintScoreText.Instance.Score));
+                _paintCalled = true;
+            }
+        }
+        else
+        {
+            transform.position = Vector3.MoveTowards(transform.position, FinishBlock.Instance.PlayerPosition.transform.position, _speed * Time.deltaTime * 60f);
+            CameraFollow.Instance.locationOffset = Vector3.MoveTowards(CameraFollow.Instance.locationOffset, new Vector3(0, 9f, -11f), Time.deltaTime * 60f);
+            CameraFollow.Instance.rotationOffset = Vector3.MoveTowards(CameraFollow.Instance.rotationOffset, new Vector3(15f, 0, 0), Time.deltaTime * 60f);
+        }
+
     }
 
 
@@ -54,13 +70,11 @@ public class PlayerController : MonoBehaviour
             PaintItemCollide(paintItem);
             return;
         }
-        print("Check for another");
         FinishBlock finishBlock = collisionGameObject.GetComponent<FinishBlock>();
         if (finishBlock != null)
         {
-            print("its a finish block");
             _moveTowardsFinish = true;
-    }
+        }
     }
 
     private void PaintItemCollide(Collectable item)

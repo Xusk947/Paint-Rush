@@ -14,6 +14,14 @@ public class PaintScoreText : MonoBehaviour
     public int Score
     {
         get { return _score; }
+        set 
+        { 
+            _score = value; 
+            if (_text != null)
+            {
+                _text.text = "Score " + _score;
+            }
+        }
     }
 
     private void Awake()
