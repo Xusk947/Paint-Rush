@@ -2,52 +2,50 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Collectable : MonoBehaviour
+namespace PaintRush.World
 {
 
-    protected Renderer _renderer;
-
-    protected bool _colected = false;
-    private Vector3 _velocity; 
-    private void Awake()
+    public class Collectable : MonoBehaviour
     {
-        _renderer = GetComponent<Renderer>();
-    }
 
-    private void FixedUpdate()
-    {
-        if ( _colected )
+        protected Renderer _renderer;
+
+        protected bool _colected = false;
+        private Vector3 _velocity; 
+        private void Awake()
         {
-            CollectedAnimation();
-        } else
-        {
-            transform.eulerAngles += new Vector3(0, 2.5f, 0);
+            _renderer = GetComponent<Renderer>();
         }
-    }
-    
-    private void CollectedAnimation()
-    {
-        SubtractColor(new Color(0, 0, 0, 0.1f));
-        transform.position += _velocity;
 
-        if (_renderer.material.color.a < -1)
+        private void FixedUpdate()
+        {
+            if ( _colected )
+            {
+                CollectedAnimation();
+            } else
+            {
+                transform.eulerAngles += new Vector3(0, 2.5f, 0);
+            }
+        }
+    
+        private void CollectedAnimation()
         {
             Destroy(gameObject);
         }
-    }
 
-    protected virtual void ChangeColor(List<Color> colors)
-    {
-        _renderer.material.color = colors[Random.Range(0, colors.Count)];
-    }
+        protected virtual void ChangeColor(List<Color> colors)
+        {
+            _renderer.material.color = colors[Random.Range(0, colors.Count)];
+        }
 
-    protected virtual void SubtractColor(Color color)
-    {
-        _renderer.material.color -= color;
-    }
+        protected virtual void SubtractColor(Color color)
+        {
+            _renderer.material.color -= color;
+        }
 
-    public virtual void Collect() {
-        _colected = true;
-        _velocity = new Vector3(0, 0.1f, 0);
+        public virtual void Collect() {
+            _colected = true;
+            _velocity = new Vector3(0, 0.1f, 0);
+        }
     }
 }

@@ -1,10 +1,13 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class DesktopInputManager : InputManager
+namespace PaintRush.Input
 {
-    private void Update()
+    public class DesktopInputManager : InputManager
     {
-        _axis = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        private void Update()
+        {
+            _axis = new Vector2(UnityEngine.Input.GetAxis("Horizontal"), UnityEngine.Input.GetAxis("Vertical"));
+        }
     }
 }

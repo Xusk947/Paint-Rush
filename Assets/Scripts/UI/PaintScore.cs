@@ -3,53 +3,57 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PaintScoreText : MonoBehaviour
+namespace PaintRush.UI
 {
-    public static PaintScoreText Instance;
 
-    private Text _text;
-    private int _score = 0;
-    private int _textScore = 0;
-    
-    public int Score
+    public class PaintScoreText : MonoBehaviour
     {
-        get { return _score; }
-        set 
-        { 
-            _score = value; 
-            if (_text != null)
-            {
-                _text.text = "Score " + _score;
+        public static PaintScoreText Instance;
+
+        private Text _text;
+        private int _score = 0;
+        private int _textScore = 0;
+    
+        public int Score
+        {
+            get { return _score; }
+            set 
+            { 
+                _score = value; 
+                if (_text != null)
+                {
+                    _text.text = "Score " + _score;
+                }
             }
         }
-    }
 
-    private void Awake()
-    {
-        Instance = this;
-        _text = GetComponentInChildren<Text>();
-    }
-
-    private void Update()
-    {
-        if (_textScore != _score)
+        private void Awake()
         {
-            StartCoroutine(UpdateScore());
-            _text.text = "Score " + _textScore;
+            Instance = this;
+            _text = GetComponentInChildren<Text>();
         }
-    }
 
-    IEnumerator UpdateScore()
-    {
-        while (_textScore != _score)
+        private void Update()
         {
-            _textScore = Mathf.Clamp(_textScore + 1, 0, _score);
-            yield return new WaitForSeconds(0.01f);
+            if (_textScore != _score)
+            {
+                StartCoroutine(UpdateScore());
+                _text.text = "Score " + _textScore;
+            }
         }
-    }
 
-    public void AddScore(int score)
-    {
-        _score += score;
+        IEnumerator UpdateScore()
+        {
+            while (_textScore != _score)
+            {
+                _textScore = Mathf.Clamp(_textScore + 1, 0, _score);
+                yield return new WaitForSeconds(0.01f);
+            }
+        }
+
+        public void AddScore(int score)
+        {
+            _score += score;
+        }
     }
 }

@@ -2,17 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FinishBlock : Block
+namespace PaintRush.World
 {
-    public static FinishBlock Instance;
-
-    public GameObject PlayerPosition;
-    public GameObject PaintCanvasSpawn;
-
-    private void Awake()
+    public class FinishBlock : Block
     {
-        Instance = this;
-        PlayerPosition = transform.Find("PlayerPosition").gameObject;
-        PaintCanvasSpawn = transform.Find("PaintCanvasSpawn").gameObject;
+        public static FinishBlock Instance;
+
+        public GameObject PlayerPosition;
+        public GameObject PaintCanvasSpawn;
+
+        private void Awake()
+        {
+            Instance = this;
+            PlayerPosition = transform.Find("PlayerPosition").gameObject;
+            PaintCanvasSpawn = transform.Find("PaintCanvasSpawn").gameObject;
+        }
     }
 }

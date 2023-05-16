@@ -1,22 +1,30 @@
+using PaintRush.World;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Content : MonoBehaviour
+namespace PaintRush
 {
-    /// --- BLOCK SECTION ---
-    public static Block EmptyBlock, FinishBlock;
-    public static List<Block> PaintBlocks, DangerBlocks;
-    private void Awake()
+    public class Content : MonoBehaviour
     {
-        EmptyBlock = Resources.Load<Block>("Blocks/EmptyBlock");
-        FinishBlock = Resources.Load<Block>("Blocks/FinishBlock");
+        /// --- BLOCK SECTION ---
+        public static Block EmptyBlock, FinishBlock;
+        public static List<Block> PaintBlocks, DangerBlocks;
 
-        PaintBlocks = new List<Block>();
-        PaintBlocks.AddRange(Resources.LoadAll<Block>("Blocks/PaintBlock"));
+        public static GameObject PlayerPaintBall;
+        private void Awake()
+        {
+            EmptyBlock = Resources.Load<Block>("Blocks/EmptyBlock");
+            FinishBlock = Resources.Load<Block>("Blocks/FinishBlock");
 
-        DangerBlocks = new List<Block>();
-        DangerBlocks.AddRange(Resources.LoadAll<Block>("Blocks/DangerBlock"));
+            PaintBlocks = new List<Block>();
+            PaintBlocks.AddRange(Resources.LoadAll<Block>("Blocks/PaintBlock"));
+
+            DangerBlocks = new List<Block>();
+            DangerBlocks.AddRange(Resources.LoadAll<Block>("Blocks/DangerBlock"));
+
+            PlayerPaintBall = Resources.Load<GameObject>("Collectable/PlayerPaintBall");
+        }
     }
 }

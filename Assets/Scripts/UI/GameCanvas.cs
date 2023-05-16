@@ -1,61 +1,67 @@
+using PaintRush.Painting;
+using PaintRush.Data;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class GameCanvas : MonoBehaviour
+namespace PaintRush.UI
 {
-    public static GameCanvas Instance;
 
-    private Image _continue, _ad;
-    private void Awake()
+    public class GameCanvas : MonoBehaviour
     {
-        Instance = this;
-        _continue = transform.Find("Continue").GetComponent<Image>();
-        _ad = transform.Find("AD").GetComponent<Image>();
-    }
+        public static GameCanvas Instance;
 
-    private void Start()
-    {
-        PaintCanvas.PaintEvent += PaintFinished;
-    }
-
-    private void PaintFinished(bool finished)
-    {
-        ToggleTitles(true);
-    }
-
-    /***
-     * Show AD, Continue buttons
-     */
-    public void ToggleTitles(bool visibility)
-    {
-        _continue.gameObject.SetActive(visibility);
-        _ad.gameObject.SetActive(visibility);
-    }
-
-    private void OnDestroy()
-    {
-        PaintCanvas.PaintEvent -= PaintFinished;
-    }
-
-    public void OnContinueClick()
-    {
-        GameData gd = GameData.Instance;
-
-        if (gd == null)
+        private Image _continue, _ad;
+        private void Awake()
         {
-            gd = new GameData();
+            Instance = this;
+            _continue = transform.Find("Continue").GetComponent<Image>();
+            _ad = transform.Find("AD").GetComponent<Image>();
         }
 
-        gd.ImportPaintCanvasData(GameManager.Instance.PaintCanvas);
+        private void Start()
+        {
+            PaintCanvas.PaintEvent += PaintFinished;
+        }
 
-        SceneManager.LoadScene(0);
-    }
+        private void PaintFinished(bool finished)
+        {
+            ToggleTitles(true);
+        }
 
-    public void OnAdClick()
-    {
-        // TODO ADD AD xD
+        /***
+         * Show AD, Continue buttons
+         */
+        public void ToggleTitles(bool visibility)
+        {
+            _continue.gameObject.SetActive(visibility);
+            _ad.gameObject.SetActive(visibility);
+        }
+
+        private void OnDestroy()
+        {
+            PaintCanvas.PaintEvent -= PaintFinished;
+        }
+
+        public void OnContinueClick()
+        {
+            GameData gd = GameData.Instance;
+
+            if (gd == null)
+            {
+                gd = new GameData();
+            }
+
+            gd.ImportPaintCanvasData(GameManager.Instance.PaintCanvas);
+
+            SceneManager.LoadScene(0);
+        }
+
+        public void OnAdClick()
+        {
+            // TODO ADD AD xD
+        }
     }
 }

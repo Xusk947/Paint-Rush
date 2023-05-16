@@ -2,28 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraFollow : MonoBehaviour
+namespace PaintRush.World
 {
-    public static CameraFollow Instance;
-
-    public Transform target;
-    public float smoothSpeed = 0.125f;
-    public Vector3 locationOffset;
-    public Vector3 rotationOffset;
-
-    private void Awake()
+    public class CameraFollow : MonoBehaviour
     {
-        Instance = this;    
-    }
-    private void FixedUpdate()
-    {
-        if (target == null) return;
-        Vector3 desiredPosition = target.position + target.rotation * locationOffset;
-        Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
-        transform.position = smoothedPosition;
+        public static CameraFollow Instance;
 
-        Quaternion desiredrotation = target.rotation * Quaternion.Euler(rotationOffset);
-        Quaternion smoothedrotation = Quaternion.Lerp(transform.rotation, desiredrotation, smoothSpeed);
-        transform.rotation = smoothedrotation;
+        public Transform target;
+        public float smoothSpeed = 0.125f;
+        public Vector3 locationOffset;
+        public Vector3 rotationOffset;
+
+        private void Awake()
+        {
+            Instance = this;    
+        }
+        private void FixedUpdate()
+        {
+            if (target == null) return;
+            Vector3 desiredPosition = target.position + target.rotation * locationOffset;
+            Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
+            transform.position = smoothedPosition;
+
+            Quaternion desiredrotation = target.rotation * Quaternion.Euler(rotationOffset);
+            Quaternion smoothedrotation = Quaternion.Lerp(transform.rotation, desiredrotation, smoothSpeed);
+            transform.rotation = smoothedrotation;
+        }
     }
 }

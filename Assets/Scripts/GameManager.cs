@@ -1,42 +1,48 @@
-﻿using System.Collections;
+﻿using PaintRush.Painting;
+using PaintRush.Data;
+using System.Collections;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+namespace PaintRush
 {
-    public static GameManager Instance;
-    [SerializeField]
-    private float _levelDifficult = 1.0f;
 
-    public PaintCanvas PaintCanvas;
-
-    [SerializeField]
-    public float LevelDifficult
+    public class GameManager : MonoBehaviour
     {
-        get { return _levelDifficult; }
-    }
+        public static GameManager Instance;
+        [SerializeField]
+        private float _levelDifficult = 1.0f;
 
-    private void Start()
-    {
-        PaintCanvas = Instantiate(Resources.Load<PaintCanvas>("Prefabs/PaintItem"));
+        public PaintCanvas PaintCanvas;
 
-        if (GameData.Instance != null)
+        [SerializeField]
+        public float LevelDifficult
         {
-            print("LOADED GAME DATA");
-            GameData.Instance.ExportPaintCanvasData(PaintCanvas);
-        } else
-        {
-            print("GAME DATA NOT CREATED");
-            PaintCanvas.Texture = Resources.Load<Texture2D>("Images/cat");
+            get { return _levelDifficult; }
         }
-    }
 
-    private void Update()
-    {
-        _levelDifficult += 0.00003f;
-    }
+        private void Start()
+        {
+            PaintCanvas = Instantiate(Resources.Load<PaintCanvas>("Prefabs/PaintItem"));
 
-    private void Awake()
-    {
-        Instance = this;
+            if (GameData.Instance != null)
+            {
+                print("LOADED GAME DATA");
+                GameData.Instance.ExportPaintCanvasData(PaintCanvas);
+            } else
+            {
+                print("GAME DATA NOT CREATED");
+                PaintCanvas.Texture = Resources.Load<Texture2D>("Images/cat");
+            }
+        }
+
+        private void Update()
+        {
+            _levelDifficult += 0.00003f;
+        }
+
+        private void Awake()
+        {
+            Instance = this;
+        }
     }
 }
