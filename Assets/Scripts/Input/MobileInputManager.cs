@@ -20,28 +20,16 @@ namespace PaintRush
         {
             _axis.x = 0;
             Vector2 touchPosition = Vector2.zero;
-            if (touchSupported)
+            if (UnityEngine.Input.touchCount <= 0) return;
+
+            Touch touch = UnityEngine.Input.touches[0];
+
+            if (touch.phase == TouchPhase.Moved)
             {
-                touchPosition = UnityEngine.Input.GetTouch(0).position;
-            } else if (UnityEngine.Input.GetKeyDown(KeyCode.Mouse0))
-            {
-                touchPosition = new Vector2(UnityEngine.Input.mousePosition.x, UnityEngine.Input.mousePosition.y);
+                _axis = touch.deltaPosition / 10f;
+                print(_axis);
             }
 
-            touchPosition.x = UnityEngine.Input.mousePosition.x / screenSize.x;
-
-            if (touchPosition.x < 0.33f)
-            {
-                // Touch on the left third of the screen
-                // Set axis value to -1
-                _axis.x = -1f;
-            }
-            else if (touchPosition.x > 0.66f)
-            {
-                // Touch on the right third of the screen
-                // Set axis value to 1
-                _axis.x = 1f;
-            }
         }
     }
 }
