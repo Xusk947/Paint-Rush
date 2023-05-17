@@ -27,17 +27,7 @@ namespace PaintRush.World
         {
             for(int i = 0; i < paintItem.Value; i++)
             {
-                GameObject paintBall = SpawnPaintBall();
-                paintBall.GetComponent<Renderer>().material.color = paintItem.Color;
-                paintBall.transform.SetParent(transform);
-                paintBall.transform.localPosition = new Vector3(_size.x * _currentHorizontalRow * 2f, _size.y * _currentVerticalRow * 2f, 0);
-                _paintBalls.Push(paintBall);
-                _currentHorizontalRow++;
-                if (_currentHorizontalRow > _horizontalRow)
-                {
-                    _currentHorizontalRow = -_horizontalRow;
-                    _currentVerticalRow++;
-                }
+                _paintBalls.Push(paintItem.gameObject);
             }
         }
 

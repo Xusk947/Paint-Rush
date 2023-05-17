@@ -1,7 +1,6 @@
 ﻿using PaintRush.Painting;
 using PaintRush.Input;
 using PaintRush.World;
-using System.Collections;
 using UnityEngine;
 
 namespace PaintRush

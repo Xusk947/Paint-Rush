@@ -28,6 +28,20 @@ namespace PaintRush.UI
 
         private void PaintFinished(bool finished)
         {
+            PaintCanvas paintCanvas = GameManager.Instance.PaintCanvas;
+            print(XData.Instance);
+            print(paintCanvas.Texture.name);
+            if (XData.Instance.Textures.ContainsKey(paintCanvas.Texture.name))
+            {
+                print("Override data texture");
+                XData.Instance.Textures[paintCanvas.Texture.name] = new TextureData(paintCanvas.Texture.name, true);
+            }
+            else
+            {
+                print("Create a new Texture data");
+                XData.Instance.Textures.Add(paintCanvas.Texture.name, new TextureData(paintCanvas.Texture.name, true));
+            }
+            DataManager.SaveGame(XData.Instance);
             ToggleTitles(true);
         }
 

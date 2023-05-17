@@ -19,6 +19,7 @@ namespace PaintRush.Painting
          * When Function Paint called after this value it will take a 1 point from ScoreBoard
          */
         public int CountUseModifier = 3;
+        public bool Finished;
 
         private Texture2D _texture, _currentTexture;
     
@@ -86,7 +87,25 @@ namespace PaintRush.Painting
         public Dictionary<Color, List<Vector2Int>> Pixels
         {
             get { return _pixels; }
-            set { _pixels = value; }
+            set 
+            {
+                var keys = _pixels.Keys.ToList();
+                var values = _pixels.Values.ToList();
+                for(int i = 0; i < _pixels.Count; i++)
+                {
+                    var key = keys[i];
+                    for(int k = 0; k < values[i].Count; k++)
+                    {
+                        var pixel = values[i][k];
+                        if (!value[key].Contains(pixel))
+                        {
+                            _currentTexture.SetPixel(pixel.x, pixel.y, key);
+                        }
+                    }
+                }
+                _currentTexture.Apply();
+                _pixels = value;
+            }
         }
 
 
@@ -115,7 +134,6 @@ namespace PaintRush.Painting
                     Vector2Int pixel = colorPixels[0];
 
                     _currentTexture.SetPixel(pixel.x, pixel.y, value);
-                    _currentTexture.Apply();
 
                     colorPixels.Remove(pixel);
                     countUse--;
@@ -123,6 +141,7 @@ namespace PaintRush.Painting
                     {
                         countUse = CountUseModifier;
                         player.PaintHolder.RemoveItem();
+                        _currentTexture.Apply();
                     }
 
                     _pixelFillTime -= 0.1f;
@@ -141,7 +160,7 @@ namespace PaintRush.Painting
             }
 
             PaintEvent?.Invoke(finished);
-
+            Finished = finished;
             _pixelFillTime = 10f;
         }
 

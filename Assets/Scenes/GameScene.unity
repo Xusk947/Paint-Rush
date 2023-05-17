@@ -449,8 +449,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 433810019}
   smoothSpeed: 0.125
-  locationOffset: {x: 0, y: 9, z: -2}
-  rotationOffset: {x: 60, y: 0, z: 0}
+  locationOffset: {x: 2.84, y: 15, z: -2}
+  rotationOffset: {x: 60, y: -25.61, z: 0}
 --- !u!1 &630455519
 GameObject:
   m_ObjectHideFlags: 0
@@ -748,7 +748,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 761806264}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fda5656e2ce19694c83f4098047788e3, type: 3}
+  m_Script: {fileID: 11500000, guid: 459c8fb23d44acf4f9785c7a3c4eeeb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &928153219
@@ -1749,7 +1749,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1753260988}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.677}
+  m_LocalPosition: {x: 0, y: 0, z: -0.84}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

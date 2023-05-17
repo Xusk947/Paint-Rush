@@ -30,7 +30,15 @@ namespace PaintRush.World
     
         private void CollectedAnimation()
         {
-            Destroy(gameObject);
+            PaintHolder paintHolder = PlayerController.Instance.PaintHolder;
+            if (transform.position.z < paintHolder.transform.position.z )
+            {
+                transform.position = Vector3.MoveTowards(transform.position, paintHolder.transform.position, Time.deltaTime * 60f);
+                if (Vector3.Distance(transform.position, paintHolder.transform.position) < 1f) gameObject.SetActive(false);
+            } else
+            {
+                transform.position += new Vector3(0, .5f * Time.deltaTime * 60f, 0);
+            }
         }
 
         protected virtual void ChangeColor(List<Color> colors)
