@@ -29,6 +29,8 @@ namespace PaintRush.Painting
         private Dictionary<Color, List<Vector2Int>> _pixels;
 
         private float _pixelFillTime = 10f;
+        private int _minFilledPixelAmount = 0;
+        private int _filledPixels = 0;
 
         public List<Color> Colors
         {
@@ -47,6 +49,9 @@ namespace PaintRush.Painting
                 _currentTexture = new Texture2D(_texture.width, _texture.height, _texture.format, _texture.mipmapCount > 1);
                 _currentTexture.filterMode = _texture.filterMode;
 
+                _minFilledPixelAmount = (_texture.width * _texture.height) / 100;
+                _filledPixels = 0;
+
                 _material.mainTexture = _currentTexture;
 
                 transform.localScale = new Vector3(1, 1, 1);
@@ -57,8 +62,9 @@ namespace PaintRush.Painting
                 if (meshRenderer != null && meshRenderer.sharedMaterial != null)
                 {
                     float ration = (_texture.width > _texture.height ?  (float) _texture.height / _texture.width : (float) _texture.width / _texture.height);
-                    print(_texture.width + "w : " + _texture.height + "h | ration: " + ration);
-                    transform.localScale = new Vector3(transform.localScale.x, 1, transform.localScale.x * ration);
+                    float zScale = ((_texture.height > _texture.width) ? 1 : 0) + transform.localScale.x * ration; 
+
+                    transform.localScale = new Vector3(transform.localScale.x, 1, zScale);
                     for (int x = 0; x < _texture.width; x++)
                     {
                         for (int y = 0; y < _texture.height; y++)
@@ -136,15 +142,20 @@ namespace PaintRush.Painting
                     if (colorPixels.Count <= 0) break;
                     Vector2Int pixel = colorPixels[0];
 
+                    _filledPixels++;
                     _currentTexture.SetPixel(pixel.x, pixel.y, value);
 
                     colorPixels.Remove(pixel);
                     countUse--;
+                    if (_filledPixels >= _minFilledPixelAmount)
+                    {
+                        _filledPixels = 0;
+                        _currentTexture.Apply();
+                    }
                     if (countUse < 0)
                     {
                         countUse = CountUseModifier;
                         player.PaintHolder.RemoveItem();
-                        _currentTexture.Apply();
                     }
 
                     _pixelFillTime -= 0.1f;
@@ -152,6 +163,7 @@ namespace PaintRush.Painting
 
                     yield return WaitForSecondsMillisec(_pixelFillTime);
                 }
+                _currentTexture.Apply();
             }
 
             bool finished = true;
