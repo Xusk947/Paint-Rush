@@ -10,28 +10,45 @@ namespace PaintRush.UI
     {
         public static UICanvas Instance;
 
-        private Image _shop;
-        private Image _pressToPlay;
+        private Button _shop, _pressToPlay, _returnButton;
+        private RectTransform _shopUI;
 
         private void Awake()
         {
             Time.timeScale = 0f;
             Instance = this;
 
-            _shop = transform.Find("Shop").GetComponent<Image>();
-            _pressToPlay = transform.Find("PressToPlay").GetComponent<Image>();
+            _shop = transform.Find("ShopButton").GetComponent<Button>();
+            _shop.onClick.AddListener(OnShopButtonClick);
+
+            _pressToPlay = transform.Find("PressToPlayButton").GetComponent<Button>();
+            _pressToPlay.onClick.AddListener(OnPressToPlayClick);
+
+            _shopUI = transform.Find("ShopUI").GetComponent<RectTransform>();
+
+            _returnButton = _shopUI.Find("ReturnButton").GetComponent<Button>();
+            _returnButton.onClick.AddListener(OnReturnButtonClick);
         }
 
-        public void ShopButtonClick()
+        private void OnShopButtonClick()
         {
-
+            _pressToPlay.gameObject.SetActive(false);
+            _shop.gameObject.SetActive(false);
+            _shopUI.gameObject.SetActive(true);
         }
 
-        public void PressToPlayClick()
+        private void OnPressToPlayClick()
         {
             Time.timeScale = 1f;
             gameObject.SetActive(false);
             GameCanvas.Instance.gameObject.SetActive(true);
+        }
+
+        private void OnReturnButtonClick()
+        {
+            _pressToPlay.gameObject.SetActive(true);
+            _shop.gameObject.SetActive(true);
+            _shopUI.gameObject.SetActive(false);
         }
     }
 }

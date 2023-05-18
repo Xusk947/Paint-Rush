@@ -22,7 +22,7 @@ namespace PaintRush.UI
                 _score = value; 
                 if (_text != null)
                 {
-                    _text.text = "Score " + _score;
+                    _text.text = _score.ToString();
                 }
             }
         }
@@ -38,7 +38,7 @@ namespace PaintRush.UI
             if (_textScore != _score)
             {
                 StartCoroutine(UpdateScore());
-                _text.text = "Score " + _textScore;
+                _text.text = _textScore.ToString();
             }
         }
 
