@@ -28,7 +28,7 @@ namespace PaintRush
             else gameObject.AddComponent<DesktopInputManager>();
             PaintCanvas = Instantiate(Resources.Load<PaintCanvas>("Prefabs/PaintItem"));
 
-            if (GameData.Instance != null)
+            if (GameData.Instance != null && !GameData.Instance.Finished)
             {
                 GameData.Instance.ExportPaintCanvasData(PaintCanvas);
             } else

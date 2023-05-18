@@ -41,6 +41,7 @@ namespace PaintRush.UI
                 print("Create a new Texture data");
                 XData.Instance.Textures.Add(paintCanvas.Texture.name, new TextureData(paintCanvas.Texture.name, true));
             }
+            XData.Instance.Current = null;
             DataManager.SaveGame(XData.Instance);
             ToggleTitles(true);
         }

@@ -3,6 +3,7 @@ using PaintRush.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using UnityEngine;
 
@@ -20,7 +21,7 @@ namespace PaintRush.Painting
          */
         public int CountUseModifier = 3;
         public bool Finished;
-
+        [SerializeField, ReadOnly(true)]
         private Texture2D _texture, _currentTexture;
     
         private Renderer _renderer;
@@ -55,7 +56,9 @@ namespace PaintRush.Painting
 
                 if (meshRenderer != null && meshRenderer.sharedMaterial != null)
                 {
-                    transform.localScale = new Vector3(transform.localScale.x, 1, transform.localScale.x + (float)_texture.width / _texture.height);
+                    float ration = (_texture.width > _texture.height ?  (float) _texture.height / _texture.width : (float) _texture.width / _texture.height);
+                    print(_texture.width + "w : " + _texture.height + "h | ration: " + ration);
+                    transform.localScale = new Vector3(transform.localScale.x, 1, transform.localScale.x * ration);
                     for (int x = 0; x < _texture.width; x++)
                     {
                         for (int y = 0; y < _texture.height; y++)

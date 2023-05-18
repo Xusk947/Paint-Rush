@@ -13,6 +13,8 @@ namespace PaintRush.Data
         public Texture2D CurrentTexture, Texture;
         public Dictionary<Color, List<Vector2Int>> Pixels;
         public int CountUseModifier;
+        public bool Finished;
+
         public GameData() {
             Instance = this;
         }
@@ -23,6 +25,7 @@ namespace PaintRush.Data
             Texture = canvas.Texture;
             Pixels = canvas.Pixels;
             CountUseModifier = canvas.CountUseModifier + 1;
+            Finished = canvas.Finished;
         }
 
         public void ExportPaintCanvasData(PaintCanvas to)
@@ -31,6 +34,7 @@ namespace PaintRush.Data
             to.CurrentTexture = CurrentTexture;
             to.Pixels = Pixels;
             to.CountUseModifier = CountUseModifier;
+            to.Finished = Finished;
         }
     }
 }

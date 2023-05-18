@@ -43,7 +43,7 @@ namespace PaintRush.World
 
         protected virtual void ChangeColor(List<Color> colors)
         {
-            _renderer.material.color = colors[Random.Range(0, colors.Count)];
+            _renderer.material.color = colors[Random.Range(0, colors.Count)] + new Color(0, 0, 0, 1f);
         }
 
         protected virtual void SubtractColor(Color color)

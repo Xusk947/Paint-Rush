@@ -37,7 +37,7 @@ namespace PaintRush.World
             for (int i = 0; i < transform.childCount; i++)
             {
                 Renderer childRenderer = transform.GetChild(i).GetComponent<Renderer>();
-                childRenderer.material.color = _renderer.sharedMaterial.color;
+                childRenderer.material.color = _renderer.sharedMaterial.color + new Color(0, 0, 0, 1f);
             }
         }
 
