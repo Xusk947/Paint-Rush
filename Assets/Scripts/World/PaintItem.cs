@@ -21,7 +21,6 @@ namespace PaintRush.World
         }
         private void Start()
         {
-            ChangeColor(GameManager.Instance.PaintCanvas.Colors);
         }
 
         public override void Collect()

@@ -1,28 +1,34 @@
 using PaintRush.Data;
+using PaintRush.Utils;
 using PaintRush.World;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Xml.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using World;
 
 namespace PaintRush
 {
     public class Content : MonoBehaviour
     {
         /// --- BLOCK SECTION ---
-        public static Block EmptyBlock, FinishBlock;
+        public static Block EmptyBlock;
+        public static FinishBlock FinishBlock;
         public static List<Block> PaintBlocks, DangerBlocks;
 
         public static GameObject PlayerPaintBall;
         public static Dictionary<string, List<Texture2D>> Textures;
+        public static Bullet Bullet;
+
+        public static Shader FillerShader;
 
         private void Awake()
         {
-            XData.Instance = DataManager.LoadGame();
-
             EmptyBlock = Resources.Load<Block>("Blocks/EmptyBlock");
-            FinishBlock = Resources.Load<Block>("Blocks/FinishBlock");
+            FinishBlock = Resources.Load<FinishBlock>("Blocks/FinishBlock");
 
             PaintBlocks = new List<Block>();
             PaintBlocks.AddRange(Resources.LoadAll<Block>("Blocks/PaintBlock"));
@@ -31,42 +37,34 @@ namespace PaintRush
             DangerBlocks.AddRange(Resources.LoadAll<Block>("Blocks/DangerBlock"));
 
             PlayerPaintBall = Resources.Load<GameObject>("Collectable/PlayerPaintBall");
+
+            Bullet = Resources.Load<Bullet>("Prefabs/Bullet");
+
+            FillerShader = Resources.Load<Shader>("Shaders/FillShader");
+
             LoadTextures();
         }
 
         private void LoadTextures()
         {
             Textures = new Dictionary<string, List<Texture2D>>();
-            List<Texture2D> textures = new List<Texture2D>(Resources.LoadAll<Texture2D>("Images"));
+            List<Texture2D> textures = new List<Texture2D>(Resources.LoadAll<Texture2D>("Images/Textures"));
             foreach (Texture2D texture in textures)
             {
                 string textureName = texture.name;
-                // Check if the texture has a scale suffix
-                if (textureName.Contains("_scaled"))
+                print(textureName);
+                string baseName = textureName[..textureName.LastIndexOf("_")];
+                print(baseName);
+                if (Textures.ContainsKey(baseName))
                 {
-                    string baseName = textureName[..textureName.LastIndexOf("_")]; // Get the base name without the scale suffix
-                    // Add the texture to the dictionary under the base name
-                    if (Textures.ContainsKey(baseName))
-                    {
-                        Textures[baseName].Add(texture);
-                    }
-                    else
-                    {
-                        Textures.Add(baseName, new List<Texture2D> { texture });
-                    }
-                }
-                else
+                    Textures[baseName].Add(texture);
+                } else
                 {
-                    // Add the original texture to the dictionary
-                    if (!Textures.ContainsKey(textureName))
-                    {
-                        Textures.Add(textureName, new List<Texture2D> { texture });
-                    }
-
+                    Textures.Add(baseName, new List<Texture2D> { texture });
                 }
             }
-            RemoveFinishedTextures();
             SortTextures();
+            print(Textures.ToCommaSeparatedString());
         }
 
         private void SortTextures()
@@ -76,28 +74,7 @@ namespace PaintRush
                 List<Texture2D> textures = kvp.Value;
 
                 // Sort the textures based on their names
-                textures.Sort((t1, t2) => t1.name.CompareTo(t2.name));
-            }
-        }
-        
-        private void RemoveFinishedTextures()
-        {
-            var keys = Textures.Keys.ToList();
-            var values = Textures.Values.ToList();
-            for (int i = 0; i < Textures.Count; i++)
-            {
-                var key = keys[i];
-                var value = values[i];
-
-                if (XData.Instance.Textures.ContainsKey(key))
-                {
-                    TextureData texture = XData.Instance.Textures[key];
-                    if (texture.Finished)
-                    {
-                        print(texture + " : was finished and removed from list");
-                        Textures.Remove(texture.Name);
-                    }
-                }
+                textures.Sort(new TextureSorter());
             }
         }
     }

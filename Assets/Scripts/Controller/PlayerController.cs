@@ -1,9 +1,9 @@
-﻿using PaintRush.Painting;
-using PaintRush.Input;
+﻿using PaintRush.Input;
 using PaintRush.World;
 using UnityEngine;
+using World;
 
-namespace PaintRush
+namespace PaintRush.Controller
 {
     public class PlayerController : MonoBehaviour
     {
@@ -14,10 +14,14 @@ namespace PaintRush
         [SerializeField]
         private float _speed = 1f;
 
-        private bool _moveTowardsFinish;
         private bool _paintCalled = false;
+        private float _reloadSpeed = .5f;
+        private float _shootTimer = 0f;
 
+        private GameObject _aim;
+        
         public PaintHolder PaintHolder { get; private set; }
+        public bool Stop = false;
 
         public int CollectedBalls
         {
@@ -28,17 +32,19 @@ namespace PaintRush
         {
             Instance = this;
             PaintHolder = transform.Find("PaintHolder").gameObject.AddComponent<PaintHolder>();
+            _aim = transform.Find("Aim").gameObject;
         }
 
         private void FixedUpdate()
         {
-            if (_moveTowardsFinish) UpdateMovementToFinish();
-            else UpdateMovement();
+            UpdateMovement();
+            UpdateShooting();
             //_characterController.Move(new Vector3(axis.x * _speed, 0, _straigth_speed * GameManager.Instance.LevelDifficult));
         }
 
         private void UpdateMovement()
         {
+            if (Stop) return;
             if (transform.position.y > -0.5f)
             {
                 Vector2 axis = InputManager.Instance.Axis;
@@ -49,32 +55,10 @@ namespace PaintRush
             }
         }
 
-        private void UpdateMovementToFinish()
-        {
-            float distance = (FinishBlock.Instance.PlayerPosition.transform.position - transform.position).sqrMagnitude;
-
-            if (distance < 1)
-            {
-                PaintCanvas canvas = GameManager.Instance.PaintCanvas;
-                if (!_paintCalled)
-                {
-                    StartCoroutine(canvas.FillPixels(this));
-                    _paintCalled = true;
-                }
-            }
-            else
-            {
-                transform.position = Vector3.MoveTowards(transform.position, FinishBlock.Instance.PlayerPosition.transform.position, _speed * Time.deltaTime * 60f);
-                CameraFollow.Instance.locationOffset = Vector3.MoveTowards(CameraFollow.Instance.locationOffset, new Vector3(0, 9f, -11f), Time.deltaTime * 60f);
-                CameraFollow.Instance.rotationOffset = Vector3.MoveTowards(CameraFollow.Instance.rotationOffset, new Vector3(15f, 0, 0), Time.deltaTime * 60f);
-            }
-
-        }
-
-
         private void OnTriggerEnter(Collider other)
         {
             GameObject collisionGameObject = other.gameObject;
+            string name = collisionGameObject.name;
             // Collision with PaintItem
             Collectable paintItem = collisionGameObject.GetComponent<Collectable>();
             if (paintItem != null)
@@ -85,7 +69,20 @@ namespace PaintRush
             FinishBlock finishBlock = collisionGameObject.GetComponent<FinishBlock>();
             if (finishBlock != null)
             {
-                _moveTowardsFinish = true;
+                Stop = true;
+            }
+        }
+
+        private void UpdateShooting()
+        {
+            _shootTimer -= Time.deltaTime;
+
+            if (_shootTimer < 0)
+            {
+                _shootTimer = _reloadSpeed;
+
+                Bullet bullet = Instantiate(Content.Bullet);
+                bullet.transform.position = _aim.transform.position;
             }
         }
 

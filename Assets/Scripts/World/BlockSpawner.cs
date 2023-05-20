@@ -1,8 +1,10 @@
-﻿using PaintRush.Painting;
+﻿using PaintRush.Controller;
 using PaintRush.Tools;
+using PaintRush.Utils;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using World;
 
 namespace PaintRush.World
 {
@@ -30,6 +32,7 @@ namespace PaintRush.World
         private int _fixedSpawnAmount = -1;
 
         private RouletteWheelSelection<BlockCollection> _blockRoulette;
+        private List<FinishBlock> _finishBlocks;
 
         private void Awake()
         {
@@ -49,6 +52,7 @@ namespace PaintRush.World
         {
             SpawnBlock(Instantiate(Content.EmptyBlock));
             SpawnBlock(Instantiate(Content.EmptyBlock));
+
             SpawnBlock(GetNextBlock());
             SpawnBlock(GetNextBlock());
             SpawnBlock(GetNextBlock());
@@ -96,6 +100,26 @@ namespace PaintRush.World
                 _blocksStack.Remove(block);
                 Destroy(block.gameObject);
                 SpawnBlock(GetNextBlock());
+                if (_id == _fixedSpawnAmount)
+                {
+                    SpawnFinishLine();
+                }
+            }
+        }
+
+        private void SpawnFinishLine()
+        {
+            SpawnBlock(Instantiate(Content.EmptyBlock));
+            _finishBlocks = new List<FinishBlock>();
+
+            List<Texture2D> _textures = ArrayUtils.GetRandomValue(Content.Textures);
+
+            for (int i = 0; i < _textures.Count; i++)
+            {
+                FinishBlock finishBlock = Instantiate(Content.FinishBlock);
+                finishBlock.Renderer.material.mainTexture = _textures[i];
+                _finishBlocks.Add(finishBlock);
+                SpawnBlock(finishBlock);
             }
         }
 
@@ -109,25 +133,20 @@ namespace PaintRush.World
             {
                 bounds.Encapsulate(renderer.bounds);
             }
+            float size = bounds.max.z * 2;
 
             block.name = _id.ToString();
+
+            float zpos = _length + size / 2;
+
             block.transform.SetParent(transform, false);
-            block.transform.position = transform.position + new Vector3(0, 0, _length);
+            block.transform.position = transform.position + new Vector3(0, 0, zpos);
             // Get the z value of the total bounds
-            float size = bounds.max.z * 2;
             _length += size;
             _lastBlockLength = size;
 
             _blocksStack.Add(block);
             _id++;
-
-            if (_fixedSpawnAmount == _id)
-            {
-                SpawnBlock(Instantiate(Content.FinishBlock));
-                PaintCanvas paintCanvas = GameManager.Instance.PaintCanvas;
-                paintCanvas.gameObject.SetActive(true);
-                paintCanvas.transform.position = FinishBlock.Instance.PaintCanvasSpawn.transform.position;
-            }
         }
 
         private Block GetNextBlock()

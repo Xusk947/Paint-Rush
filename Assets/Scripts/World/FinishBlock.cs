@@ -1,21 +1,25 @@
-using System.Collections;
-using System.Collections.Generic;
+using PaintRush;
+using PaintRush.World;
 using UnityEngine;
 
-namespace PaintRush.World
+namespace World
 {
     public class FinishBlock : Block
     {
-        public static FinishBlock Instance;
+        private Renderer _renderer;
 
-        public GameObject PlayerPosition;
-        public GameObject PaintCanvasSpawn;
+        public Renderer Renderer
+        {
+            get { return _renderer; }
+            set
+            {
+                _renderer = value;
+            }
+        }
 
         private void Awake()
         {
-            Instance = this;
-            PlayerPosition = transform.Find("PlayerPosition").gameObject;
-            PaintCanvasSpawn = transform.Find("PaintCanvasSpawn").gameObject;
+            _renderer = transform.Find("Plane").GetComponent<Renderer>();
         }
     }
 }

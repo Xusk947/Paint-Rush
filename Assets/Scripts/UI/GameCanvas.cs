@@ -1,4 +1,3 @@
-using PaintRush.Painting;
 using PaintRush.Data;
 using System.Collections;
 using System.Collections.Generic;
@@ -23,27 +22,6 @@ namespace PaintRush.UI
 
         private void Start()
         {
-            PaintCanvas.PaintEvent += PaintFinished;
-        }
-
-        private void PaintFinished(bool finished)
-        {
-            PaintCanvas paintCanvas = GameManager.Instance.PaintCanvas;
-            print(XData.Instance);
-            print(paintCanvas.Texture.name);
-            if (XData.Instance.Textures.ContainsKey(paintCanvas.Texture.name))
-            {
-                print("Override data texture");
-                XData.Instance.Textures[paintCanvas.Texture.name] = new TextureData(paintCanvas.Texture.name, true);
-            }
-            else
-            {
-                print("Create a new Texture data");
-                XData.Instance.Textures.Add(paintCanvas.Texture.name, new TextureData(paintCanvas.Texture.name, true));
-            }
-            XData.Instance.Current = null;
-            DataManager.SaveGame(XData.Instance);
-            ToggleTitles(true);
         }
 
         /***
@@ -55,22 +33,8 @@ namespace PaintRush.UI
             _ad.gameObject.SetActive(visibility);
         }
 
-        private void OnDestroy()
-        {
-            PaintCanvas.PaintEvent -= PaintFinished;
-        }
-
         public void OnContinueClick()
         {
-            GameData gd = GameData.Instance;
-
-            if (gd == null)
-            {
-                gd = new GameData();
-            }
-
-            gd.ImportPaintCanvasData(GameManager.Instance.PaintCanvas);
-
             SceneManager.LoadScene(0);
         }
 
