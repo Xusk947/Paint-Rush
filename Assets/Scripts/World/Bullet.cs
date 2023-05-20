@@ -1,11 +1,13 @@
 using PaintRush.Controller;
 using UnityEngine;
+using World;
 
 namespace PaintRush.World
 {
     public class Bullet : MonoBehaviour
     {
         private Rigidbody _rigidBody;
+        private float _lifeTime = 10f;
         private void Start()
         {
             _rigidBody = GetComponent<Rigidbody>();
@@ -13,10 +15,24 @@ namespace PaintRush.World
             _rigidBody.velocity = new Vector3(0, 0, 25f);
         }
 
+        private void Update()
+        {
+            _lifeTime -= Time.deltaTime;
+            if ( _lifeTime < 0 )
+            {
+                Destroy(gameObject);
+            }
+        }
+
         private void OnCollisionEnter(Collision collision)
         {
             if (collision.gameObject.GetComponent<PlayerController>() != null) return;
-            Destroy(gameObject);
+            FinishBlock finishBlock = collision.gameObject.GetComponentInParent<FinishBlock>();
+            if (finishBlock != null)
+            {
+                finishBlock.ShaderFill -= .01f;
+                Destroy(gameObject);
+            }
         }
     }
 }
