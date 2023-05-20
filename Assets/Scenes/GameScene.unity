@@ -585,6 +585,9 @@ MonoBehaviour:
   _straigthSpeed: 0.075
   _speed: 0.2
   _reloadSpeed: 10.25
+  coneRadius: 1
+  coneHeight: 2.21
+  coneSegments: 6
   Stop: 0
   CanShoot: 0
 --- !u!1 &519420028
@@ -2693,8 +2696,8 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1616277599}
   - {fileID: 1028625152}
+  - {fileID: 1616277599}
   - {fileID: 273427941}
   m_Father: {fileID: 0}
   m_RootOrder: 7

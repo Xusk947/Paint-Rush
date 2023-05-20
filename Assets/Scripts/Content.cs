@@ -27,6 +27,8 @@ namespace PaintRush
 
         private void Awake()
         {
+            LoadVars();
+
             EmptyBlock = Resources.Load<Block>("Blocks/EmptyBlock");
             FinishBlock = Resources.Load<FinishBlock>("Blocks/FinishBlock");
 
@@ -76,6 +78,11 @@ namespace PaintRush
                 // Sort the textures based on their names
                 textures.Sort(new TextureSorter());
             }
+        }
+
+        private void LoadVars()
+        {
+            Vars.Instance = DataManager.Load<Vars>(DataManager.VARSDATA_SAVE_FILENAME);
         }
     }
 }

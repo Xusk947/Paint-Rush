@@ -37,7 +37,6 @@ namespace PaintRush.Controller
             Instance = this;
             PaintHolder = transform.Find("PaintHolder").gameObject.AddComponent<PaintHolder>();
             _aim = transform.Find("Aim").gameObject;
-
         }
 
         private void FixedUpdate()

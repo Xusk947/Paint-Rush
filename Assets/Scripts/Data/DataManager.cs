@@ -6,28 +6,29 @@ namespace PaintRush.Data
 {
     public class DataManager
     {
-        private static readonly string XDATA_SAVE_FILENAME = "XData";
-        public static void SaveGame(SerializableData gameData)
+        public static readonly string XDATA_SAVE_FILENAME = "XData";
+        public static readonly string VARSDATA_SAVE_FILENAME = "XVars";
+        public static void Save(SerializableData gameData, string fileName)
         {
             BinaryFormatter formatter = new BinaryFormatter();
-            FileStream fileStream = File.Create(Application.persistentDataPath + "/" + XDATA_SAVE_FILENAME);
+            FileStream fileStream = File.Create(Application.persistentDataPath + "/" + fileName);
             formatter.Serialize(fileStream, gameData);
             fileStream.Close();
-            Debug.Log("GameData saved at: " + Application.persistentDataPath + "/" + XDATA_SAVE_FILENAME);
+            Debug.Log("GameData saved at: " + Application.persistentDataPath + "/" + fileName);
         }
 
-        public static SerializableData LoadGame()
+        public static T Load<T>(string fileName)
         {
-            Debug.Log("Game loaded from: " + Application.persistentDataPath + "/" + XDATA_SAVE_FILENAME);
-            if (File.Exists(Application.persistentDataPath + "/" + XDATA_SAVE_FILENAME))
+            string fullFileName = "Game loaded from: " + Application.persistentDataPath + "/" + fileName;
+            if (File.Exists(Application.persistentDataPath + "/" + fileName))
             {
                 BinaryFormatter formatter = new BinaryFormatter();
-                FileStream fileStream = File.Open(Application.persistentDataPath + "/" + XDATA_SAVE_FILENAME, FileMode.Open);
-                SerializableData gameData = (SerializableData)formatter.Deserialize(fileStream);
+                FileStream fileStream = File.Open(fullFileName, FileMode.Open);
+                T gameData = (T)formatter.Deserialize(fileStream);
                 fileStream.Close();
                 return gameData;
             }
-            return null;
+            throw new FileNotFoundException("File:" + typeof(T).FullName + " not found at: " + fullFileName);
         }
     }
 }
