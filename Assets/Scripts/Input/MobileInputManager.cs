@@ -27,7 +27,6 @@ namespace PaintRush
             if (touch.phase == TouchPhase.Moved)
             {
                 _axis = touch.deltaPosition / 10f;
-                print(_axis);
             }
 
         }

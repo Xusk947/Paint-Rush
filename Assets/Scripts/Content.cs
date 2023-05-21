@@ -27,8 +27,6 @@ namespace PaintRush
 
         private void Awake()
         {
-            LoadVars();
-
             EmptyBlock = Resources.Load<Block>("Blocks/EmptyBlock");
             FinishBlock = Resources.Load<FinishBlock>("Blocks/FinishBlock");
 

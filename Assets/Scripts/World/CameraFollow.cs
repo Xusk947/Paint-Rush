@@ -15,7 +15,7 @@ namespace PaintRush.World
 
         private void Awake()
         {
-            Instance = this;    
+            Instance = this;
         }
         private void FixedUpdate()
         {

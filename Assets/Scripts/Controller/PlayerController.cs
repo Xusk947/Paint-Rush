@@ -14,17 +14,34 @@ namespace PaintRush.Controller
         [SerializeField]
         private float _speed = 1f;
         [SerializeField]
-        private float _reloadSpeed = .5f;
-        private float _shootTimer = 100f;
+        private ParticleSystem _particleSystem;
 
         public float coneRadius = 1f;
         public float coneHeight = 2f;
         public int coneSegments = 16;
 
-        private GameObject _aim;
-        
+        private bool _stop;
+
+        private Rigidbody _rigidBody;
+        private Animator _animator;
+
         public PaintHolder PaintHolder { get; private set; }
-        public bool Stop = false;
+        public bool Stop
+        {
+            get { return _stop; }
+            set 
+            { 
+                _stop = value;
+                if (_stop)
+                {
+                    _particleSystem?.Play();
+                } else
+                {
+                    _particleSystem?.Stop();
+                }
+                _animator.SetBool("magic", _stop);
+            }
+        }
         public bool CanShoot = false;
 
         public int CollectedBalls
@@ -36,23 +53,26 @@ namespace PaintRush.Controller
         {
             Instance = this;
             PaintHolder = transform.Find("PaintHolder").gameObject.AddComponent<PaintHolder>();
-            _aim = transform.Find("Aim").gameObject;
+            _rigidBody = GetComponent<Rigidbody>();
+            _animator = GetComponent<Animator>();
+            _animator.Play(0);
         }
 
-        private void FixedUpdate()
+        private void Update()
         {
             UpdateMovement();
-            UpdateShooting();
             //_characterController.Move(new Vector3(axis.x * _speed, 0, _straigth_speed * GameManager.Instance.LevelDifficult));
         }
-
+            
         private void UpdateMovement()
         {
             if (Stop) return;
-            if (transform.position.y > -0.5f)
+            if (transform.position.y > -2.0)
             {
+                _animator.SetBool("running", true);
                 Vector2 axis = InputManager.Instance.Axis;
-                transform.position += new Vector3(axis.x * _speed * Time.deltaTime * 60f, 0, _straigthSpeed * GameManager.Instance.LevelDifficult * Time.deltaTime * 60f);
+                Vector3 vel = new Vector3(axis.x * Time.deltaTime * 30f, 0, _speed * Time.deltaTime * 60f);
+                _rigidBody.position += vel;
             } else
             {
                 CameraFollow.Instance.target = null;
@@ -77,21 +97,6 @@ namespace PaintRush.Controller
                 Stop = true;
             }
         }
-
-        private void UpdateShooting()
-        {
-            if (!CanShoot) return;
-            _shootTimer -= Time.deltaTime * 60f;
-
-            if (_shootTimer < 0)
-            {
-                _shootTimer = _reloadSpeed;
-
-                Bullet bullet = Instantiate(Content.Bullet);
-                bullet.transform.position = _aim.transform.position;
-            }
-        }
-
         private void PaintItemCollide(Collectable item)
         {
             PaintHolder.AddItem(item as PaintItem);
