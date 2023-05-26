@@ -30,6 +30,8 @@ namespace PaintRush
                 gameObject.AddComponent<MobileInputManager>();
             else
                 gameObject.AddComponent<DesktopInputManager>();
+
+            Content.Init();
         }
 
         private void Update()

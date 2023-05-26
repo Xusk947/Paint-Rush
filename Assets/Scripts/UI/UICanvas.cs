@@ -46,6 +46,7 @@ namespace PaintRush.UI
             Time.timeScale = 1f;
             gameObject.SetActive(false);
             GameCanvas.Instance.gameObject.SetActive(true);
+            PaintScoreText.Instance.gameObject.SetActive(true);
         }
 
         private void OnReturnButtonClick()

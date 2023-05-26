@@ -121,7 +121,7 @@ namespace PaintRush.World
 
                 // Spawn a new block and check if the maximum spawn amount has been reached
                 SpawnBlock(GetNextBlock());
-                if (_id > _fixedSpawnAmount)
+                if (_fixedSpawnAmount > 0 && _id > _fixedSpawnAmount)
                 {
                     SpawnFinishLine();
                 }
@@ -130,12 +130,6 @@ namespace PaintRush.World
 
         private void SpawnPaintBlock()
         {
-            // Check if there are available textures
-            if (_textures.Count <= 0)
-            {
-                _textures = ArrayUtils.GetRandomValue(Content.Textures);
-            }
-
             // Instantiate a finish block and assign a texture
             PaintBlock finishBlock = Instantiate(Content.FinishBlock);
             finishBlock.Renderer.material.mainTexture = _textures[0];
@@ -144,6 +138,11 @@ namespace PaintRush.World
             _paintBlocks.Add(finishBlock);
             _textures.RemoveAt(0);
 
+            // Check if there are available textures
+            if (_textures.Count <= 0)
+            {
+                _textures = ArrayUtils.GetRandomValue(Content.Textures);
+            }
             // Spawn the finish block
             SpawnBlock(finishBlock);
         }

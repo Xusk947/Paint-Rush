@@ -21,6 +21,7 @@ namespace PaintRush.UI
             // Find and assign references to the Continue and AD buttons
             _continueButton = transform.Find("Continue").GetComponent<Image>();
             _adButton = transform.Find("AD").GetComponent<Image>();
+            PaintScoreText.Instance = transform.Find("PaintScoreImage").GetComponent<PaintScoreText>();
         }
 
         private void Start()

@@ -35,7 +35,7 @@ namespace World
         /// </summary>
         public float ShaderFill
         {
-            get { return _renderer.material.GetFloat("_FillPercentage"); }
+            get { return _renderer == null ? 0 : _renderer.material.GetFloat("_FillPercentage"); }
             set
             {
                 float fillness = Mathf.Clamp(value, 0, 1);

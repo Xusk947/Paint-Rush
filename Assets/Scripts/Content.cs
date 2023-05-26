@@ -25,7 +25,7 @@ namespace PaintRush
 
         public static Material FillerMaterial;
 
-        private void Awake()
+        public static void Init()
         {
             EmptyBlock = Resources.Load<Block>("Blocks/EmptyBlock");
             FinishBlock = Resources.Load<PaintBlock>("Blocks/FinishBlock");
@@ -45,16 +45,14 @@ namespace PaintRush
             LoadTextures();
         }
 
-        private void LoadTextures()
+        private static void LoadTextures()
         {
             Textures = new Dictionary<string, List<Texture2D>>();
             List<Texture2D> textures = new List<Texture2D>(Resources.LoadAll<Texture2D>("Images/Textures"));
             foreach (Texture2D texture in textures)
             {
                 string textureName = texture.name;
-                print(textureName);
                 string baseName = textureName[..textureName.LastIndexOf("_")];
-                print(baseName);
                 if (Textures.ContainsKey(baseName))
                 {
                     Textures[baseName].Add(texture);
@@ -65,10 +63,9 @@ namespace PaintRush
                 }
             }
             SortTextures();
-            print(Textures.ToCommaSeparatedString());
         }
 
-        private void SortTextures()
+        private static void SortTextures()
         {
             foreach (KeyValuePair<string, List<Texture2D>> kvp in Textures)
             {
@@ -77,11 +74,6 @@ namespace PaintRush
                 // Sort the textures based on their names
                 textures.Sort(new TextureSorter());
             }
-        }
-
-        private void LoadVars()
-        {
-            DataManager.Load<Vars>(DataManager.VARSDATA_SAVE_FILENAME);
         }
     }
 }

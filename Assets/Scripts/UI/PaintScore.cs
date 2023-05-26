@@ -29,7 +29,6 @@ namespace PaintRush.UI
         private void Awake()
         {
             Instance = this;
-
             // Get the reference to the Text component
             _text = GetComponentInChildren<Text>();
         }
