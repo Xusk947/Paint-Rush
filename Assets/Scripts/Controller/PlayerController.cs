@@ -22,6 +22,7 @@ namespace PaintRush.Controller
         public int coneSegments = 16;
 
         private bool _stop;
+        private float _fillMultiplayer = 1f;
 
         private Rigidbody _rigidBody;
         private Animator _animator;
@@ -36,6 +37,7 @@ namespace PaintRush.Controller
                 if (_stop)
                 {
                     _particleSystem?.Play();
+                    _fillMultiplayer = 1.0f;
                 } else
                 {
                     _particleSystem?.Stop();
@@ -62,20 +64,26 @@ namespace PaintRush.Controller
         private void Update()
         {
             UpdateMovement();
+            // Iterate each finish block and break when unfilled block is finded, then change ShaderFill
             if (Stop)
             {
-                List<FinishBlock> finishBlocks = BlockSpawner.Instance.FinishBlocks;
+                List<PaintBlock> finishBlocks = BlockSpawner.Instance.PaintBlocks;
                 for(int i = 0; i < finishBlocks.Count; i++)
                 {
-                    FinishBlock block = finishBlocks[i];
+                    PaintBlock block = finishBlocks[i];
                     if (block.Filled) continue;
                     {
-                        block.ShaderFill -= Time.deltaTime / 10f;
+                        block.ShaderFill -= Time.deltaTime / 10f * _fillMultiplayer;
+                        _fillMultiplayer *= 1.01f;
                         break;
                     }
                 }
             }
-            //_characterController.Move(new Vector3(axis.x * _speed, 0, _straigth_speed * GameManager.Instance.LevelDifficult));
+        }
+
+        private void UpdateFinishBlockFill()
+        {
+
         }
             
         private void UpdateMovement()
@@ -104,7 +112,7 @@ namespace PaintRush.Controller
                 PaintItemCollide(paintItem);
                 return;
             }
-            FinishBlock finishBlock = collisionGameObject.GetComponent<FinishBlock>();
+            PaintBlock finishBlock = collisionGameObject.GetComponent<PaintBlock>();
             if (finishBlock != null)
             {
                 CanShoot = true;

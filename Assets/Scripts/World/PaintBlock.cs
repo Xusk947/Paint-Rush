@@ -5,24 +5,34 @@ using UnityEngine;
 
 namespace World
 {
-    public class FinishBlock : Block
+    /// <summary>
+    /// Represents a paint block in the game world.
+    /// </summary>
+    public class PaintBlock : Block
     {
-
         private static int id = 0;
 
         [SerializeField]
         private Vector3 _movePos;
         private Renderer _renderer;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the paint block is filled.
+        /// </summary>
         public bool Filled { get; private set; }
 
+        /// <summary>
+        /// Gets or sets the renderer of the paint block.
+        /// </summary>
         public Renderer Renderer
         {
             get { return _renderer; }
-            set
-            {
-                _renderer = value;
-            }
+            set { _renderer = value; }
         }
+
+        /// <summary>
+        /// Gets or sets the fill percentage of the paint block's shader.
+        /// </summary>
         public float ShaderFill
         {
             get { return _renderer.material.GetFloat("_FillPercentage"); }
@@ -48,7 +58,8 @@ namespace World
 
         private void Update()
         {
-            if (Filled) {
+            if (Filled)
+            {
                 _renderer.transform.localPosition = Vector3.MoveTowards(_renderer.transform.localPosition, _movePos, 1f * Time.deltaTime * 60f);
             }
         }

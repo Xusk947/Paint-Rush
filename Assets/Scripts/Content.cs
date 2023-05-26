@@ -16,7 +16,7 @@ namespace PaintRush
     {
         /// --- BLOCK SECTION ---
         public static Block EmptyBlock;
-        public static FinishBlock FinishBlock;
+        public static PaintBlock FinishBlock;
         public static List<Block> PaintBlocks, DangerBlocks;
 
         public static GameObject PlayerPaintBall;
@@ -28,7 +28,7 @@ namespace PaintRush
         private void Awake()
         {
             EmptyBlock = Resources.Load<Block>("Blocks/EmptyBlock");
-            FinishBlock = Resources.Load<FinishBlock>("Blocks/FinishBlock");
+            FinishBlock = Resources.Load<PaintBlock>("Blocks/FinishBlock");
 
             PaintBlocks = new List<Block>();
             PaintBlocks.AddRange(Resources.LoadAll<Block>("Blocks/PaintBlock"));
@@ -58,7 +58,8 @@ namespace PaintRush
                 if (Textures.ContainsKey(baseName))
                 {
                     Textures[baseName].Add(texture);
-                } else
+                }
+                else
                 {
                     Textures.Add(baseName, new List<Texture2D> { texture });
                 }
@@ -80,7 +81,7 @@ namespace PaintRush
 
         private void LoadVars()
         {
-            Vars.Instance = DataManager.Load<Vars>(DataManager.VARSDATA_SAVE_FILENAME);
+            DataManager.Load<Vars>(DataManager.VARSDATA_SAVE_FILENAME);
         }
     }
 }

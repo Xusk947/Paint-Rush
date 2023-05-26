@@ -27,10 +27,10 @@ namespace PaintRush.World
         private void OnCollisionEnter(Collision collision)
         {
             if (collision.gameObject.GetComponent<PlayerController>() != null) return;
-            FinishBlock finishBlock = collision.gameObject.GetComponentInParent<FinishBlock>();
-            if (finishBlock != null)
+            PaintBlock paintBlock = collision.gameObject.GetComponentInParent<PaintBlock>();
+            if (paintBlock != null)
             {
-                finishBlock.ShaderFill -= .01f;
+                paintBlock.ShaderFill -= .01f;
                 Destroy(gameObject);
             }
         }

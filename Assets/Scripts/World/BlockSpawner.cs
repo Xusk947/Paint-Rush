@@ -8,36 +8,36 @@ using World;
 
 namespace PaintRush.World
 {
+    /// <summary>
+    /// Spawns and manages blocks in the game world.
+    /// </summary>
     public class BlockSpawner : MonoBehaviour
     {
         public static BlockSpawner Instance;
-        /// <summary>
-        /// Length of all spawned blocks in summary
-        /// </summary>
+
+        // Length of all spawned blocks in summary
         private float _length;
-        /// <summary>
-        /// Max size of last block on z origin 
-        /// </summary>
+
+        // Max size of last block on z origin 
         private float _lastBlockLength;
-        /// <summary>
-        /// Use for add/remove Blocks on a map
-        /// </summary>
+
+        // List to add/remove Blocks on the map
         private List<Block> _blocksStack;
-        /// <summary>
-        /// To count number of placed block sections
-        /// </summary>
+
+        // Counter for number of placed block sections
         private int _id = 0;
 
         [SerializeField]
         private int _fixedSpawnAmount = -1;
 
         private RouletteWheelSelection<BlockCollection> _blockRoulette;
-        private List<FinishBlock> _finishBlocks;
+        private List<PaintBlock> _paintBlocks;
+        private List<Texture2D> _textures;
 
-        public List<FinishBlock> FinishBlocks
+        public List<PaintBlock> PaintBlocks
         {
-            get { return _finishBlocks; }
-        } 
+            get { return _paintBlocks; }
+        }
 
         private void Awake()
         {
@@ -46,6 +46,10 @@ namespace PaintRush.World
 
         private void Start()
         {
+            // Randomly select textures
+            _textures = ArrayUtils.GetRandomValue(Content.Textures);
+            _paintBlocks = new List<PaintBlock>();
+
             _length = 0;
             _blocksStack = new List<Block>();
 
@@ -55,9 +59,11 @@ namespace PaintRush.World
 
         private void SpawnStartBlocks()
         {
+            // Spawn initial empty blocks
             SpawnBlock(Instantiate(Content.EmptyBlock));
             SpawnBlock(Instantiate(Content.EmptyBlock));
 
+            // Spawn initial blocks
             SpawnBlock(GetNextBlock());
             SpawnBlock(GetNextBlock());
             SpawnBlock(GetNextBlock());
@@ -65,8 +71,11 @@ namespace PaintRush.World
 
         private void LoadBlocks()
         {
+            // Set up the block roulette for different block types
+
             _blockRoulette = new RouletteWheelSelection<BlockCollection>();
-            // Add Paint Block to the roulette
+
+            // Add Paint Blocks to the roulette
             BlockCollection paintBlocks = new BlockCollection
             {
                 difficulty = 4,
@@ -93,44 +102,65 @@ namespace PaintRush.World
 
         private void Update()
         {
+            // Check if player controller exists
             if (PlayerController.Instance == null) return;
+
+            // Check if the maximum spawn amount has been reached
             if (_fixedSpawnAmount != -1 && _id >= _fixedSpawnAmount) return;
 
             PlayerController player = PlayerController.Instance;
             float size = transform.position.z + _length - _lastBlockLength * 2.5f;
 
+            // Check if the player's position is beyond the spawn size
             if (player.transform.position.z > size)
             {
+                // Remove and destroy the oldest block
                 Block block = _blocksStack.First();
                 _blocksStack.Remove(block);
                 Destroy(block.gameObject);
+
+                // Spawn a new block and check if the maximum spawn amount has been reached
                 SpawnBlock(GetNextBlock());
-                if (_id == _fixedSpawnAmount)
+                if (_id > _fixedSpawnAmount)
                 {
                     SpawnFinishLine();
                 }
             }
         }
 
+        private void SpawnPaintBlock()
+        {
+            // Check if there are available textures
+            if (_textures.Count <= 0)
+            {
+                _textures = ArrayUtils.GetRandomValue(Content.Textures);
+            }
+
+            // Instantiate a finish block and assign a texture
+            PaintBlock finishBlock = Instantiate(Content.FinishBlock);
+            finishBlock.Renderer.material.mainTexture = _textures[0];
+
+            // Add the finish block to the paint blocks list
+            _paintBlocks.Add(finishBlock);
+            _textures.RemoveAt(0);
+
+            // Spawn the finish block
+            SpawnBlock(finishBlock);
+        }
+
         private void SpawnFinishLine()
         {
+            // Spawn an empty block to create a finish line
             SpawnBlock(Instantiate(Content.EmptyBlock));
-            _finishBlocks = new List<FinishBlock>();
-
-            List<Texture2D> _textures = ArrayUtils.GetRandomValue(Content.Textures);
-
-            for (int i = 0; i < _textures.Count; i++)
-            {
-                FinishBlock finishBlock = Instantiate(Content.FinishBlock);
-                finishBlock.Renderer.material.mainTexture = _textures[i];
-                _finishBlocks.Add(finishBlock);
-                SpawnBlock(finishBlock);
-            }
+            SpawnBlock(Instantiate(Content.EmptyBlock));
+            SpawnBlock(Instantiate(Content.EmptyBlock));
+            SpawnBlock(Instantiate(Content.EmptyBlock));
+            SpawnBlock(Instantiate(Content.EmptyBlock));
         }
 
         private void SpawnBlock(Block block)
         {
-            // Get the bounds of a GameObject and all its children
+            // Get the bounds of the block and its children
             block.transform.position = Vector3.zero;
             Bounds bounds = new Bounds(block.transform.position, Vector3.zero);
             Renderer[] renderers = block.GetComponentsInChildren<Renderer>();
@@ -138,24 +168,37 @@ namespace PaintRush.World
             {
                 bounds.Encapsulate(renderer.bounds);
             }
+
             float size = bounds.max.z * 2;
 
+            // Assign a name to the block using the ID counter
             block.name = _id.ToString();
 
+            // Calculate the z-position for the block
             float zpos = _length + size / 2;
 
+            // Set the parent and position of the block
             block.transform.SetParent(transform, false);
             block.transform.position = transform.position + new Vector3(0, 0, zpos);
-            // Get the z value of the total bounds
+
+            // Update the total length and the last block length
             _length += size;
             _lastBlockLength = size;
 
+            // Add the block to the stack and increment the ID counter
             _blocksStack.Add(block);
             _id++;
+
+            // Check if it's time to spawn a paint block
+            if (_id <= _fixedSpawnAmount && _id % 5 == 0)
+            {
+                SpawnPaintBlock();
+            }
         }
 
         private Block GetNextBlock()
         {
+            // Spin the block roulette to get the next block
             return Instantiate(_blockRoulette.Spin().roulette.Spin());
         }
 
@@ -172,5 +215,3 @@ namespace PaintRush.World
         }
     }
 }
-
-    
