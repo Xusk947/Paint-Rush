@@ -1,5 +1,6 @@
 ﻿using PaintRush.Input;
 using PaintRush.World;
+using System.Collections.Generic;
 using UnityEngine;
 using World;
 
@@ -61,6 +62,19 @@ namespace PaintRush.Controller
         private void Update()
         {
             UpdateMovement();
+            if (Stop)
+            {
+                List<FinishBlock> finishBlocks = BlockSpawner.Instance.FinishBlocks;
+                for(int i = 0; i < finishBlocks.Count; i++)
+                {
+                    FinishBlock block = finishBlocks[i];
+                    if (block.Filled) continue;
+                    {
+                        block.ShaderFill -= Time.deltaTime / 10f;
+                        break;
+                    }
+                }
+            }
             //_characterController.Move(new Vector3(axis.x * _speed, 0, _straigth_speed * GameManager.Instance.LevelDifficult));
         }
             

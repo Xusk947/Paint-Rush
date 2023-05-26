@@ -23,7 +23,7 @@ namespace PaintRush
         public static Dictionary<string, List<Texture2D>> Textures;
         public static Bullet Bullet;
 
-        public static Shader FillerShader;
+        public static Material FillerMaterial;
 
         private void Awake()
         {
@@ -40,7 +40,7 @@ namespace PaintRush
 
             Bullet = Resources.Load<Bullet>("Prefabs/Bullet");
 
-            FillerShader = Resources.Load<Shader>("Shaders/FillShader");
+            FillerMaterial = Resources.Load<Material>("Images/Textures/Materials/TextureMaterial");
 
             LoadTextures();
         }

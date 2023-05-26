@@ -7,9 +7,13 @@ namespace World
 {
     public class FinishBlock : Block
     {
+
+        private static int id = 0;
+
         [SerializeField]
         private Vector3 _movePos;
         private Renderer _renderer;
+        public bool Filled { get; private set; }
 
         public Renderer Renderer
         {
@@ -19,33 +23,32 @@ namespace World
                 _renderer = value;
             }
         }
-
-        private float _shaderFill = 1.0f;
         public float ShaderFill
         {
-            get { return _shaderFill; }
+            get { return _renderer.material.GetFloat("_FillPercentage"); }
             set
             {
-                _shaderFill = Mathf.Clamp(value, 0, 1);
-                print(_renderer.material.GetFloat("_FillPercentage"));
-                _renderer.material.SetFloat("_FillPercentage", _shaderFill);
-                if (Mathf.Approximately(_shaderFill, 0f))
+                float fillness = Mathf.Clamp(value, 0, 1);
+                _renderer.material.SetFloat("_FillPercentage", fillness);
+                if (Mathf.Approximately(fillness, 0f))
                 {
-                    opened = true;
+                    Filled = true;
                     PlayerController.Instance.Stop = false;
                 }
             }
         }
 
-        private bool opened = false;
         private void Awake()
         {
             _renderer = transform.Find("Plane").GetComponent<Renderer>();
+            _renderer.material = Instantiate(Content.FillerMaterial);
+            _renderer.material.name = id.ToString();
+            id++;
         }
 
         private void Update()
         {
-            if (opened) {
+            if (Filled) {
                 _renderer.transform.localPosition = Vector3.MoveTowards(_renderer.transform.localPosition, _movePos, 1f * Time.deltaTime * 60f);
             }
         }

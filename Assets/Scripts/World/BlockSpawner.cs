@@ -34,6 +34,11 @@ namespace PaintRush.World
         private RouletteWheelSelection<BlockCollection> _blockRoulette;
         private List<FinishBlock> _finishBlocks;
 
+        public List<FinishBlock> FinishBlocks
+        {
+            get { return _finishBlocks; }
+        } 
+
         private void Awake()
         {
             Instance = this;
